@@ -1,4 +1,6 @@
-# 参考文档： https://www.celerycn.io/jian-jie
+# 参考文档： 
+       https://www.celerycn.io/jian-jie
+       http://v5blog.cn/pages/1281a5/
 ## celery4.0+ 不再支持windows
 # Celery 分布式任务队列
 ## 1. Celery是什么
