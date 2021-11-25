@@ -111,6 +111,7 @@
             result = res.get()
             
             res.forget()            # 将结果删除
+
     
 # 定时任务的配置：
     
@@ -204,7 +205,50 @@
         启动 Worker 进程和 Beat 进程，也可以将它们放在一个命令中：
         
             celery  -A celery_schedule worker  -B -l info
+  
+
+
+# Celery并发方式
+
+    并发方式： Prefork, Eventlet, gevent, threads/single threaded
+    
+    1. 默认使用进程池并发
+        
+        EX: celery worker -A celery_task.main --concurrency=4
+        
+    2. 使用协程方式并发
+    
+        EX:
             
+            # 安装eventlet模块
+                
+                pip install eventlet
+
+            # 启用 Eventlet 池
+                
+                celery -A celery_task.main worker -l info -P eventlet -c 1000
+
+ # Question
+ 
+ ## celery丢失任务
+    
+    修改配置如下：
+        task_reject_on_worker_lost = True    # 作用是当worker进程意外退出时，task会被放回到队列中
+        task_acks_late = True                # 作用是只有当worker完成了这个task时，任务才被标记为ack状态
+        
+## celery重复执行
+    
+    系统负载较高，消息队列里堵了太多东西的情况下，Celery容易出现重复执行一个Task，甚至不止一次的情况。
+    
+    Message超过1小时未被消费的情况下，Celery会重新发一个一模一样的（task_id相同）
+    
+    
+    解决办法：
+        
+       1.  Celery Once 是利用 Redis 加锁来实现
+           该类提供了任务去重的功能
+           
+       2. 增大未消费时间          
   
 # 使用supervisor管理
     
